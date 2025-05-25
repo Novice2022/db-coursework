@@ -1,0 +1,56 @@
+version: '3'
+services:
+  nginx:
+    build:
+      context: docker
+      dockerfile: nginx.docker
+      args:
+        UID: 1000
+        GID: 1000
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./src:/app
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+     - network
+  pgsql:
+    build:
+      context: docker
+      dockerfile: pgsql.docker
+      args:
+        UID: 1000
+        GID: 1000
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./docker/pgsql/pgdata/:/var/lib/postgresql/data/
+      - ./docker/pgsql/pgdump/:/pgdump
+    environment:
+      POSTGRES_ROOT_PASSWORD: 'postgres'
+      POSTGRES_DB: 'bank'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+    networks:
+     - network
+  php-fpm:
+    build:
+      context: './docker'
+      dockerfile: 'php-fpm.docker'
+      args:
+        UID: 1000
+        GID: 1000
+    tty: true
+    restart: always
+    volumes:
+      - ./src:/app
+    ports:
+      - '9000:9000'
+    networks:
+     - network
+networks:
+  network:
+    driver: bridge

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('legal_entities', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->uuid('client_id');
             $table->unsignedSmallInteger('industry_id');
             $table->unsignedSmallInteger('profitability_id');

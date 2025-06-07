@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->unsignedSmallInteger('entity_type_id');
-            $table->string('fullname', 100)->after('name');
+            $table->string('fullname', 100);
             $table->string('phone', 20)->unique();
             $table->string('address', 255);
             $table->date('registration_date')->default(DB::raw('NOW()'));

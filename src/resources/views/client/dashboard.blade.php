@@ -1,10 +1,13 @@
 <section>
+    @php
+        $credits = Auth::user()->credit->credits;
+    @endphp
+
     <div class="row mb-4">
         <div class="col-md-8">
             <div class="card border-0 rounded-4 shadow-sm">
                 <div class="card-body p-4">
                     <h3 class="mb-3">Добро пожаловать, {{ Auth::user()->name }}!</h3>
-                    <p class="text-muted mb-4">Ваш текущий статус: <span class="badge bg-success">Активный</span></p>
                     <button type="button" class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#newCreditModal">
                         <i class="bi bi-plus-circle me-2"></i>Новая заявка на кредит
                     </button>
@@ -56,7 +59,7 @@
                         <a href="#" class="btn btn-sm btn-outline-primary">История всех кредитов</a>
                     </div>
                     
-                    {{-- @if($credits && $credits->count() > 0)
+                    @if($credits && $credits->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
                                 <thead>
@@ -97,7 +100,7 @@
                         <div class="alert alert-info mb-0">
                             У вас нет активных кредитов. Вы можете оформить новый кредит, нажав на кнопку "Новая заявка на кредит".
                         </div>
-                    @endif --}}
+                    @endif
                 </div>
             </div>
         </div>

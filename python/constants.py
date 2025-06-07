@@ -379,7 +379,7 @@ def generate_non_static_data(amount: int, thread_name: str) -> None:
                 'role_id': 1,
                 'name': name,
                 'email': f"{name}@mail.ru".lower(),
-                'password': bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(rounds=12)).decode('utf-8'),
+                'password': bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(rounds=12)).decode('utf-8').replace('$2b$', '2y$'),
             }
         )
 
@@ -435,48 +435,61 @@ def generate_non_static_data(amount: int, thread_name: str) -> None:
             term = next(CLIENTS_LEVELS['legals']['term'][client_level])
 
         if (randint(1, 100) > 10):
-            credit_id = uuid.uuid4()
+            credits_amount = 1
 
-            monthly_rate = (interest_rate / 1_200)
+            _random = randint(0, 10)
 
-            monthly_payment = round((credit_amount * monthly_rate * ((1 + monthly_rate) ** term)) / (((1 + monthly_rate) ** term) - 1), 2)
-            payed_terms = randint(0, term)
+            if _random > 5:
+                credits_amount += 1
+            if _random > 7:
+                credits_amount += 1
+            if _random > 9:
+                credits_amount += 1
 
-            payment_datetime = int(time()) - randint(0, TIMESTAMP['month']) - TIMESTAMP['month'] * payed_terms
-            fines_probabilities = (0 if randint(0, 100) > 1 else 1 for _term in range(payed_terms))
+            for _ in range(credits_amount):
 
-            current_time = time()
+                credit_id = uuid.uuid4()
 
-            for fine in fines_probabilities:
-                if payment_datetime > current_time:
-                    break
+                monthly_rate = (interest_rate / 1_200)
 
-                if (fine):
-                    FINES.append({
-                        'id': uuid.uuid4(),
-                        'credit_id': credit_id,
-                        'amount': 1000,
-                        'reason': 'Просрочка платежа',
-                        'datetime': datetime.fromtimestamp(payment_datetime)
-                    })
-                else:
-                    PAYMENTS.append({
-                        'id': uuid.uuid4(),
-                        'credit_id': credit_id,
-                        'amount': monthly_payment,
-                        'datetime': datetime.fromtimestamp(payment_datetime)
-                    })
+                monthly_payment = round((credit_amount * monthly_rate * ((1 + monthly_rate) ** term)) / (((1 + monthly_rate) ** term) - 1), 2)
+                payed_terms = randint(0, term)
 
-                payment_datetime += TIMESTAMP['month']
+                payment_datetime = int(time()) - randint(0, TIMESTAMP['month']) - TIMESTAMP['month'] * payed_terms
+                fines_probabilities = (0 if randint(0, 100) > 1 else 1 for _term in range(payed_terms))
 
-            CREDITS.append({
-                'id': credit_id,
-                'client_id': client_id,
-                'credit_type_id': credit_type_id,
-                'amount': credit_amount,
-                'rate': interest_rate,
-                'term': term
-            })
+                current_time = time()
+
+                for fine in fines_probabilities:
+                    if payment_datetime > current_time:
+                        break
+
+                    if (fine):
+                        FINES.append({
+                            'id': uuid.uuid4(),
+                            'credit_id': credit_id,
+                            'amount': 1000,
+                            'reason': 'Просрочка платежа',
+                            'datetime': datetime.fromtimestamp(payment_datetime)
+                        })
+                    else:
+                        PAYMENTS.append({
+                            'id': uuid.uuid4(),
+                            'credit_id': credit_id,
+                            'amount': monthly_payment,
+                            'datetime': datetime.fromtimestamp(payment_datetime)
+                        })
+
+                    payment_datetime += TIMESTAMP['month']
+
+                CREDITS.append({
+                    'id': credit_id,
+                    'client_id': client_id,
+                    'credit_type_id': credit_type_id,
+                    'amount': credit_amount,
+                    'rate': interest_rate,
+                    'term': term
+                })
 
         with lock:
             THREADS_STATES[thread_name] += 1

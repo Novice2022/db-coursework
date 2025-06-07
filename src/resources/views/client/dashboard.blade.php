@@ -1,13 +1,28 @@
 <section>
     @php
-        $credits = Auth::user()->credit->credits;
+        $credits = Auth::user()->client->credits;
     @endphp
 
-    <div class="row mb-4">
+    <div class="container">
+        <div class="row">
+            <div class="flex-column col-8 gap-2">
+                @foreach ($credits as $credit)
+                    <div class="p-3">
+                        Credit
+                    </div>
+                @endforeach
+            </div>
+            <div class="col-4">
+
+            </div>
+        </div>        
+    </div>
+
+    {{-- <div class="row mb-4">
         <div class="col-md-8">
             <div class="card border-0 rounded-4 shadow-sm">
                 <div class="card-body p-4">
-                    <h3 class="mb-3">Добро пожаловать, {{ Auth::user()->name }}!</h3>
+                    <h3 class="mb-3">Добро пожаловать, {{ Auth::user()->client->fullname }}!</h3>
                     <button type="button" class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#newCreditModal">
                         <i class="bi bi-plus-circle me-2"></i>Новая заявка на кредит
                     </button>
@@ -47,9 +62,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     
-    <!-- Активные кредиты клиента -->
+    {{-- <!-- Активные кредиты клиента -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card border-0 rounded-4 shadow-sm">
@@ -80,7 +95,7 @@
                                             <td>{{ number_format($credit->amount, 2, '.', ' ') }} ₽</td>
                                             <td>{{ $credit->rate }}%</td>
                                             <td>{{ $credit->term }} мес.</td>
-                                            <td>{{ $credit->start_date->format('d.m.Y') }}</td>
+                                            <td>{{ $credit->start_date }}</td>
                                             <td>
                                                 @if($credit->end_date && $credit->end_date < now())
                                                     <span class="badge bg-secondary">Завершен</span>
@@ -89,6 +104,7 @@
                                                 @endif
                                             </td>
                                             <td>
+                                                <a href="#" target="_blank" rel="noopener noreferrer">empty</a>
                                                 <a href="{{ route('credits.show', $credit->id) }}" class="btn btn-sm btn-outline-primary">Подробнее</a>
                                             </td>
                                         </tr>
@@ -104,9 +120,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     
-    <!-- Модальное окно для новой заявки -->
+    {{-- <!-- Модальное окно для новой заявки -->
     <div class="modal fade" id="newCreditModal" tabindex="-1" aria-labelledby="newCreditModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -114,16 +130,16 @@
                     <h5 class="modal-title" id="newCreditModalLabel">Новая заявка на кредит</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                {{-- <form method="POST" action="{{ route('credits.store') }}">
+                <form method="POST" action="{{ route('credits.store') }}">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="credit_type_id" class="form-label">Тип кредита</label>
                             <select class="form-select" id="credit_type_id" name="credit_type_id" required>
                                 <option value="" selected disabled>Выберите тип кредита</option>
-                                {{-- @foreach($creditTypes as $type)
+                                @foreach($creditTypes as $type)
                                     <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                @endforeach --}}
+                                @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
@@ -143,8 +159,8 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
                         <button type="submit" class="btn btn-primary">Подать заявку</button>
                     </div>
-                </form> --}}
+                </form>
             </div>
         </div>
-    </div>
+    </div> --}}
 </section>

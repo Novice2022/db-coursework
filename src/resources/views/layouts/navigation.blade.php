@@ -18,71 +18,7 @@
         </button>
 
         <!-- Основное меню -->
-        <div class="collapse navbar-collapse" :class="{'show': open}">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard') }}" :class="{ 'active': $page.url === '/dashboard' }">
-                        <i class="bi bi-house-door me-1"></i> Главная
-                    </a>
-                </li>
-
-                @auth
-                    <!-- Меню для клиента -->
-                    @if(auth()->user()->role_id == 1)
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('credits.index') }}" :class="{ 'active': $page.url.startsWith('/credits') }">
-                                <i class="bi bi-credit-card me-1"></i> Мои кредиты
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('payments.index') }}" :class="{ 'active': $page.url.startsWith('/payments') }">
-                                <i class="bi bi-cash-stack me-1"></i> Платежи
-                            </a>
-                        </li>
-
-                    <!-- Меню для аналитика -->
-                    @elseif(auth()->user()->role_id == 2)
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('analytics.risks') }}" :class="{ 'active': $page.url.startsWith('/analytics/risks') }">
-                                <i class="bi bi-graph-up me-1"></i> Анализ рисков
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('analytics.reports') }}" :class="{ 'active': $page.url.startsWith('/analytics/reports') }">
-                                <i class="bi bi-file-earmark-text me-1"></i> Отчеты
-                            </a>
-                        </li>
-
-                    <!-- Меню для менеджера -->
-                    @elseif(auth()->user()->role_id == 3)
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('manager.applications') }}" :class="{ 'active': $page.url.startsWith('/manager/applications') }">
-                                <i class="bi bi-folder me-1"></i> Заявки
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('manager.clients') }}" :class="{ 'active': $page.url.startsWith('/manager/clients') }">
-                                <i class="bi bi-people me-1"></i> Клиенты
-                            </a>
-                        </li>
-
-                    <!-- Меню для администратора -->
-                    @elseif(auth()->user()->role_id == 4)
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-gear me-1"></i> Администрирование
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                                <li><a class="dropdown-item" href="{{ route('admin.users') }}">Пользователи</a></li>
-                                <li><a class="dropdown-item" href="{{ route('admin.settings') }}">Настройки системы</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ route('admin.logs') }}">Журнал событий</a></li>
-                            </ul>
-                        </li>
-                    @endif
-                @endauth
-            </ul>
-
+        <div class="collapse navbar-collapse justify-content-end" :class="{'show': open}">
             <!-- Правая часть меню -->
             <div class="d-flex align-items-center">
                 @auth

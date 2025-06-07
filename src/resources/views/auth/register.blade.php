@@ -32,7 +32,7 @@
                                     </div>
                                     
                                     <!-- Менеджер -->
-                                    <div class="role-card flex-grow-1" data-role="3" onclick="selectRole(this)">
+                                    <div class="role-card flex-grow-1" data-role="2" onclick="selectRole(this)">
                                         <div class="card h-100 cursor-pointer hover-shadow">
                                             <div class="card-body text-center p-3">
                                                 <div class="icon-wrapper bg-success bg-opacity-10 p-3 rounded-circle mb-2 mx-auto">
@@ -47,7 +47,7 @@
                                     </div>
                                     
                                     <!-- Аналитик -->
-                                    <div class="role-card flex-grow-1" data-role="2" onclick="selectRole(this)">
+                                    <div class="role-card flex-grow-1" data-role="3" onclick="selectRole(this)">
                                         <div class="card h-100 cursor-pointer hover-shadow">
                                             <div class="card-body text-center p-3">
                                                 <div class="icon-wrapper bg-info bg-opacity-10 p-3 rounded-circle mb-2 mx-auto">

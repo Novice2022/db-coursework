@@ -7,21 +7,21 @@
                     <h4>Панель клиента</h4>
                     @include('client.dashboard')
                 </div>
-                
-            <!-- Дашборд для аналитика -->
-            @elseif(auth()->user()->role_id == 2)
-                <div class="alert alert-info">
-                    <h4>Панель аналитика</h4>
-                    <p class="mb-0">Здесь будет интерфейс для работы с кредитными рисками и аналитикой.</p>
-                    {{-- <!-- @include('analyst.dashboard') --> --}}
-                </div>
 
             <!-- Дашборд для менеджера -->
-            @elseif(auth()->user()->role_id == 3)
+            @elseif(auth()->user()->role_id == 2)
                 <div class="alert alert-info">
                     <h4>Панель менеджера</h4>
                     <p class="mb-0">Здесь будет интерфейс для управления кредитными заявками и клиентами.</p>
                     {{-- <!-- @include('manager.dashboard') --> --}}
+                </div>
+                
+            <!-- Дашборд для аналитика -->
+            @elseif(auth()->user()->role_id == 3)
+                <div class="alert alert-info">
+                    <h4>Панель аналитика</h4>
+                    <p class="mb-0">Здесь будет интерфейс для работы с кредитными рисками и аналитикой.</p>
+                    {{-- <!-- @include('analyst.dashboard') --> --}}
                 </div>
 
             <!-- Дашборд для администратора -->

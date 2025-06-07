@@ -3,11 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\CreditController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\AnalyticController;
-use App\Http\Controllers\ManagerController;
-use App\Http\Controllers\AdminController;
+
 
 
 Route::get('/', function () {

@@ -30,9 +30,9 @@
                                     @if(auth()->user()->role_id == 1)
                                         Клиент
                                     @elseif(auth()->user()->role_id == 2)
-                                        Аналитик
-                                    @elseif(auth()->user()->role_id == 3)
                                         Менеджер
+                                    @elseif(auth()->user()->role_id == 3)
+                                        Аналитик
                                     @elseif(auth()->user()->role_id == 4)
                                         Администратор
                                     @endif

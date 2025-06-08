@@ -240,54 +240,67 @@ DB_CONFIG = {
 
 STATIC = [
     {
+        'is_static': True,
         'table': 'entity_type',
         'entities': ENTITY_TYPE
     },
     {
+        'is_static': True,
         'table': 'role',
         'entities': ROLE
     },
     {
+        'is_static': True,
         'table': 'company_industry',
         'entities': COMPANY_INDUSTRY
     },
     {
+        'is_static': True,
         'table': 'profitability',
         'entities': PROFITABILITY
     },
     {
+        'is_static': True,
         'table': 'credit_history',
         'entities': CREDIT_HISTORY
     },
     {
+        'is_static': True,
         'table': 'credit_type',
         'entities': CREDIT_TYPE
     },
     {
+        'is_static': False,
         'table': 'clients',
         'entities': CLIENTS
     },
     {
+        'is_static': False,
         'table': 'users',
         'entities': USERS
     },
     {
+        'is_static': False,
         'table': 'individual_entities',
         'entities': INDIVIDUAL_ENTITIES
     },
     {
+        'is_static': False,
         'table': 'legal_entities',
         'entities': LEGAL_ENTITIES
     },
     {
+        'is_static': False,
         'table': 'credits',
         'entities': CREDITS
     },
     {
+        'is_static': False,
         'table': 'payments',
         'entities': PAYMENTS
     },
     {
+        'is_static': False,
         'table': 'fines',
         'entities': FINES
     },
@@ -358,6 +371,56 @@ lock = threading.Lock()
 stop_event = threading.Event()
 
 def generate_non_static_data(amount: int, thread_name: str) -> None:
+    def generate_credit(
+        credit_type_id: int,
+        credit_amount: int,
+        term: int
+    ) -> None:
+        if (randint(1, 100) > 10):
+            credit_id = uuid.uuid4()
+
+            monthly_rate = (interest_rate / 1_200)
+
+            monthly_payment = round((credit_amount * monthly_rate * ((1 + monthly_rate) ** term)) / (((1 + monthly_rate) ** term) - 1), 2)
+            payed_terms = randint(0, term)
+
+            payment_datetime = int(time()) - randint(0, TIMESTAMP['month']) - TIMESTAMP['month'] * payed_terms
+            fines_probabilities = (0 if randint(0, 100) > 1 else 1 for _term in range(payed_terms))
+
+            current_time = time()
+
+            for fine in fines_probabilities:
+                if payment_datetime > current_time:
+                    break
+
+                if (fine):
+                    FINES.append({
+                        'id': uuid.uuid4(),
+                        'credit_id': credit_id,
+                        'amount': 1000,
+                        'reason': 'Просрочка платежа',
+                        'datetime': datetime.fromtimestamp(payment_datetime)
+                    })
+                else:
+                    PAYMENTS.append({
+                        'id': uuid.uuid4(),
+                        'credit_id': credit_id,
+                        'amount': monthly_payment,
+                        'datetime': datetime.fromtimestamp(payment_datetime)
+                    })
+
+                payment_datetime += TIMESTAMP['month']
+
+            CREDITS.append({
+                'id': credit_id,
+                'client_id': client_id,
+                'credit_type_id': credit_type_id,
+                'amount': credit_amount,
+                'rate': interest_rate,
+                'term': term
+            })
+
+
     with lock:
         THREADS_STATES[thread_name] = 0
 
@@ -379,7 +442,7 @@ def generate_non_static_data(amount: int, thread_name: str) -> None:
                 'role_id': 1,
                 'name': name,
                 'email': f"{name}@mail.ru".lower(),
-                'password': bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(rounds=12)).decode('utf-8').replace('$2b$', '2y$'),
+                'password': bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(rounds=12)).decode('utf-8').replace('$2b$', '$2y$'),
             }
         )
 
@@ -401,6 +464,16 @@ def generate_non_static_data(amount: int, thread_name: str) -> None:
         interest_rate = 21  # base rate, % - https://cbr.ru/hd_base/KeyRate/
         term = None
 
+        credits_amount = 1
+        _random = randint(0, 10)
+
+        if _random > 5:
+            credits_amount += 1
+        if _random > 7:
+            credits_amount += 1
+        if _random > 9:
+            credits_amount += 1
+
         if client['entity_type_id'] == 1:
             credit_history_id = randint(1, 6)
             client_level = 1 if random_client_level < 8 else 2
@@ -412,10 +485,13 @@ def generate_non_static_data(amount: int, thread_name: str) -> None:
                 'income': next(CLIENTS_LEVELS['individuals']['income'][client_level])
             })
 
-            credit_type_id = randint(1, 3)
-            credit_amount = next(CLIENTS_LEVELS['individuals']['credit_amount'][client_level])
-            interest_rate += CREDIT_HISTORY[credit_history_id - 1]['supplement']
-            term = next(CLIENTS_LEVELS['individuals']['term'][client_level])
+            for _ in range(credits_amount):
+                credit_type_id = randint(1, 3)
+                credit_amount = next(CLIENTS_LEVELS['individuals']['credit_amount'][client_level])
+                interest_rate += CREDIT_HISTORY[credit_history_id - 1]['supplement']
+                term = next(CLIENTS_LEVELS['individuals']['term'][client_level])
+
+                generate_credit(credit_type_id, credit_amount, term)
         else:
             industry_id = randint(1, 20)
             profitability_id = randint(1, 7)
@@ -429,67 +505,13 @@ def generate_non_static_data(amount: int, thread_name: str) -> None:
                 'guarantee_amount': next(CLIENTS_LEVELS['legals']['guarantee_amount'][client_level])
             })
 
-            credit_type_id = randint(4, 9)
-            credit_amount = next(CLIENTS_LEVELS['legals']['credit_amount'][client_level])
-            interest_rate += COMPANY_INDUSTRY[industry_id - 1]['supplement'] + PROFITABILITY[profitability_id - 1]['supplement']
-            term = next(CLIENTS_LEVELS['legals']['term'][client_level])
-
-        if (randint(1, 100) > 10):
-            credits_amount = 1
-
-            _random = randint(0, 10)
-
-            if _random > 5:
-                credits_amount += 1
-            if _random > 7:
-                credits_amount += 1
-            if _random > 9:
-                credits_amount += 1
-
             for _ in range(credits_amount):
+                credit_type_id = randint(4, 9)
+                credit_amount = next(CLIENTS_LEVELS['legals']['credit_amount'][client_level])
+                interest_rate += COMPANY_INDUSTRY[industry_id - 1]['supplement'] + PROFITABILITY[profitability_id - 1]['supplement']
+                term = next(CLIENTS_LEVELS['legals']['term'][client_level])
 
-                credit_id = uuid.uuid4()
-
-                monthly_rate = (interest_rate / 1_200)
-
-                monthly_payment = round((credit_amount * monthly_rate * ((1 + monthly_rate) ** term)) / (((1 + monthly_rate) ** term) - 1), 2)
-                payed_terms = randint(0, term)
-
-                payment_datetime = int(time()) - randint(0, TIMESTAMP['month']) - TIMESTAMP['month'] * payed_terms
-                fines_probabilities = (0 if randint(0, 100) > 1 else 1 for _term in range(payed_terms))
-
-                current_time = time()
-
-                for fine in fines_probabilities:
-                    if payment_datetime > current_time:
-                        break
-
-                    if (fine):
-                        FINES.append({
-                            'id': uuid.uuid4(),
-                            'credit_id': credit_id,
-                            'amount': 1000,
-                            'reason': 'Просрочка платежа',
-                            'datetime': datetime.fromtimestamp(payment_datetime)
-                        })
-                    else:
-                        PAYMENTS.append({
-                            'id': uuid.uuid4(),
-                            'credit_id': credit_id,
-                            'amount': monthly_payment,
-                            'datetime': datetime.fromtimestamp(payment_datetime)
-                        })
-
-                    payment_datetime += TIMESTAMP['month']
-
-                CREDITS.append({
-                    'id': credit_id,
-                    'client_id': client_id,
-                    'credit_type_id': credit_type_id,
-                    'amount': credit_amount,
-                    'rate': interest_rate,
-                    'term': term
-                })
+                generate_credit(credit_type_id, credit_amount, term)
 
         with lock:
             THREADS_STATES[thread_name] += 1

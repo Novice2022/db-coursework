@@ -1,19 +1,97 @@
 <section>
     @php
-        $credits = Auth::user()->client->credits;
+        $user = Auth::user();
+        $client = $user -> client;
+        $credits = $user -> client -> credits;
     @endphp
 
-    <div class="container">
-        <div class="row">
-            <div class="flex-column col-8 gap-2">
-                @foreach ($credits as $credit)
-                    <div class="p-3">
-                        Credit
-                    </div>
-                @endforeach
+    <div class="container pt-3">
+        <div class="row gap-0 column-gap-6">
+            <div class="flex-column col-8">
+                <div class="p-1">
+                    <h5>Кредиты</h3>
+                    @if($credits && $credits->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Тип кредита</th>
+                                        <th>Сумма, руб.</th>
+                                        <th>Ставка, %</th>
+                                        <th>Срок, мес.</th>
+                                        <th>Дата оформления</th>
+                                        <th>Статус</th>
+                                        <th>Подробнее</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($credits as $credit)
+                                        <tr @class([
+                                            'p-3',
+                                            'table-warning' => ! $credit -> fines -> isEmpty()
+                                        ])>
+                                            <td>{{ $credit->creditType->name }}</td>
+                                            <td>{{ number_format($credit->amount, 2, '.', ' ') }}</td>
+                                            <td>{{ $credit->rate }}</td>
+                                            <td>{{ $credit->term }}</td>
+                                            <td>{{ $credit->start_date }}</td>
+                                            <td>
+                                                @if($credit->end_date && $credit->end_date < now())
+                                                    <span class="badge bg-secondary">Завершен</span>
+                                                @else
+                                                    <span class="badge bg-success">Активный</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('credits.show', $credit->id) }}" class="btn btn-sm btn-outline-primary">Подробнее</a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="alert alert-info mb-0">
+                            У вас нет активных кредитов. Вы можете оформить новый кредит, нажав на кнопку "Новая заявка на кредит".
+                        </div>
+                    @endif
+                </div>
             </div>
             <div class="col-4">
+                <div class="p-1 pe-3">
+                    <div class="row md-6">
+                        <div class="alert alert-info mb-3">
+                            <h4>Общая информация</h4>
 
+                            <hr>
+
+                            <h5>ФИО</h5>
+                            <p>{{ $client -> fullname }}</p>
+                            @if ($client -> entity_type_id === 1)
+                                <h5>Тип лица</h5>
+                                <p>Физическое</p>
+
+                                <h5>Кредитная история</h5>
+                                <p>{{ $client -> individualEntity -> creditHistory -> quality }}</p>
+
+                                <h5>Доход</h5>
+                                <p>{{ $client -> individualEntity -> income }}&nbsp;руб.</p>
+                            @else
+                                <h5>Тип лица</h5>
+                                <p>Юридическое</p>
+
+                                <h5>Сфера деятельности</h5>
+                                <p>{{ $client -> legalEntity -> industry -> name }}</p>
+                                
+                                <h5>Рентабельность</h5>
+                                <p>{{ $client -> legalEntity -> profitability -> quality }}</p>
+                                
+                                <h5>Сумма залога</h5>
+                                <p>{{ $client -> legalEntity -> guarantee_amount }}&nbsp;руб.</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>        
     </div>

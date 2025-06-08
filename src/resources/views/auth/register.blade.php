@@ -66,44 +66,81 @@
                             <!-- Дополнительные поля для клиента -->
                             <div id="client_fields">
                                 <div class="mb-3">
-                                    <x-input-label for="entity_type" value="Тип клиента" />
-                                    <select id="entity_type" name="entity_type" class="form-select">
-                                        <option value="" disabled selected>Выберите тип</option>
-                                        <option value="individual">Физическое лицо</option>
-                                        <option value="legal">Юридическое лицо</option>
+                                    <label for="entity_type">Тип клиента</label>
+                                    <select id="entity_type" name="entity_type" class="form-select" onchange="handleChangeEntityType()">
+                                        <option value="" disabled selected>Выберите подходящее</option>
+                                        <option value="1">Физическое лицо</option>
+                                        <option value="2">Юридическое лицо</option>
                                     </select>
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <x-input-label for="phone" value="Телефон" />
-                                    <x-text-input id="phone" class="form-control" type="tel" name="phone" placeholder="+7 (XXX) XXX-XX-XX" />
+                                    <label for="phone">Телефон</label>
+                                    <input id="phone" class="form-control" type="tel" name="phone" placeholder="+7 (XXX) XXX-XX-XX" />
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <x-input-label for="address" value="Адрес" />
-                                    <x-text-input id="address" class="form-control" type="text" name="address" placeholder="Город, улица, дом, квартира" />
+                                    <label for="address">Адрес</label>
+                                    <input id="address" class="form-control" type="text" name="address" placeholder="Город, улица, дом, квартира" />
+                                </div>
+
+                                {{-- industry_id | profitability_id | guarantee_amount
+                                credit_history_id |  income --}}
+
+                                <div id="individual_client" style="display: none">
+                                    <div class="mb-3">
+                                        <label for="income">Ваш доход</label>
+                                        <input id="income" class="form-control" type="number" min="0" name="guarante" />
+                                    </div>
+                                </div>
+
+                                <div id="legal_client" style="display: none">
+                                    <div class="mb-3">
+                                        <label for="industry">Сфера деятельности</label>
+                                        <select id="industry" name="industry" class="form-select">
+                                            <option value="" disabled selected>Выберите подходящее</option>
+                                            
+                                            @foreach ($industries as $industry)
+                                                <option value="{{ $industry -> id }}">{{ $industry -> name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="profitability">Рентабельность</label>
+                                        <select id="profitability" name="profitability" class="form-select">
+                                            <option value="" disabled selected>Выберите подходящее</option>
+                                            
+                                            @foreach ($profitabilities as $profitability)
+                                                <option value="{{ $profitability -> id }}">{{ $profitability -> quality }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="guarantee">Сумма залога</label>
+                                        <input id="guarantee" class="form-control" type="number" min="1000000" name="guarante" placeholder="от 1 000 000" />
+                                    </div>
                                 </div>
                             </div>
                             
                             <!-- Общие поля для всех -->
                             <div class="mb-3">
-                                <x-input-label for="name" value="ФИО" />
-                                <x-text-input id="name" class="form-control" type="text" name="name" required autofocus />
+                                <label for="name">ФИО</label>
+                                <input id="name" class="form-control" type="text" name="name" required autofocus />
                             </div>
                             
                             <div class="mb-3">
-                                <x-input-label for="email" value="Email" />
-                                <x-text-input id="email" class="form-control" type="email" name="email" required />
+                                <label for="email">Email</label>
+                                <input id="email" class="form-control" type="email" name="email" required />
                             </div>
                             
                             <div class="mb-3">
-                                <x-input-label for="password" value="Пароль" />
-                                <x-text-input id="password" class="form-control" type="password" name="password" required />
+                                <label for="password">Пароль</label>
+                                <input id="password" class="form-control" type="password" name="password" required />
                             </div>
                             
                             <div class="mb-4">
-                                <x-input-label for="password_confirmation" value="Подтверждение пароля" />
-                                <x-text-input id="password_confirmation" class="form-control" type="password" name="password_confirmation" required />
+                                <label for="password_confirmation">Подтверждение пароля</label>
+                                <input id="password_confirmation" class="form-control" type="password" name="password_confirmation" required />
                             </div>
                             
                             <div class="d-flex justify-content-between align-items-center">
@@ -151,6 +188,16 @@
 
     {{-- @push('scripts') --}}
     <script>
+        function handleChangeEntityType() {
+            if (document.getElementById('entity_type').value === '1') {
+                document.getElementById('legal_client').style.display = 'none';
+                document.getElementById('individual_client').style.display = 'block';
+            } else {
+                document.getElementById('individual_client').style.display = 'none';
+                document.getElementById('legal_client').style.display = 'block';
+            }
+        }
+
         function selectRole(element) {
             // Убираем активный класс у всех карточек
             document.querySelectorAll('.role-card').forEach(card => {

@@ -3,14 +3,14 @@
         @auth
             <!-- Дашборд для клиента -->
             @if(auth()->user()->role_id == 1)
-                <div class="alert alert-info">
+                <div class="alert alert-light">
                     <h4>Панель клиента</h4>
                     @include('client.dashboard')
                 </div>
 
             <!-- Дашборд для менеджера -->
             @elseif(auth()->user()->role_id == 2)
-                <div class="alert alert-info">
+                <div class="alert alert-light">
                     <h4>Панель менеджера</h4>
                     <p class="mb-0">Здесь будет интерфейс для управления кредитными заявками и клиентами.</p>
                     {{-- <!-- @include('manager.dashboard') --> --}}
@@ -18,7 +18,7 @@
                 
             <!-- Дашборд для аналитика -->
             @elseif(auth()->user()->role_id == 3)
-                <div class="alert alert-info">
+                <div class="alert alert-light">
                     <h4>Панель аналитика</h4>
                     <p class="mb-0">Здесь будет интерфейс для работы с кредитными рисками и аналитикой.</p>
                     {{-- <!-- @include('analyst.dashboard') --> --}}

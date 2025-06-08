@@ -264,6 +264,7 @@ CREATE INDEX fines_idx ON fines USING HASH (credit_id);
     threads_amount = int(
         input("Threads amount:\n(int) > ")
     )
+    insert_static = True if input('Insert static data:\n(y/n) > ').lower() == 'y' else False
 
     clear_console()
 
@@ -318,7 +319,7 @@ CREATE INDEX fines_idx ON fines USING HASH (credit_id);
 
     print('\nFilling:\n')
 
-    for table in STATIC:
+    for table in filter(lambda table: (table['is_static'] and insert_static) or not table['is_static'], STATIC):
         fill_table(
             table['table'],
             table['entities'],

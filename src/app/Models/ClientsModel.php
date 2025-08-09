@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Client extends Model
+class ClientsModel extends Model
 {
     protected $table = 'clients';
     
@@ -26,21 +26,21 @@ class Client extends Model
     
     public function entityType(): BelongsTo
     {
-        return $this->belongsTo(EntityType::class, 'entity_type_id');
+        return $this->belongsTo(EntityTypeModel::class, 'entity_type_id');
     }
     
     public function legalEntity(): HasOne
     {
-        return $this->hasOne(LegalEntity::class, 'client_id');
+        return $this->hasOne(LegalEntitiesModel::class, 'client_id');
     }
     
     public function individualEntity(): HasOne
     {
-        return $this->hasOne(IndividualEntity::class, 'client_id');
+        return $this->hasOne(IndividualEntitiesModel::class, 'client_id');
     }
     
     public function credits(): HasMany
     {
-        return $this->hasMany(Credit::class, 'client_id');
+        return $this->hasMany(CreditsModel::class, 'client_id');
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Client;
+use App\Models\ClientsModel;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -46,7 +46,7 @@ class RegisteredUserController extends Controller
         ];
 
         if ($request->role === 'client') {
-            $userAttributes['client'] = Client::create([
+            $userAttributes['client'] = ClientsModel::create([
                 'entity_type_id' => $request->entity_type,
                 'fullname' => $request->name,
                 'phone' => $request->phone,

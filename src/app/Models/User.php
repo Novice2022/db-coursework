@@ -51,11 +51,11 @@ class User extends Authenticatable
 
     public function client(): BelongsTo
     {
-        return $this->belongsTo(Client::class, 'client_id');
+        return $this->belongsTo(ClientsModel::class, 'client_id');
     }
     
     public function role(): BelongsTo
     {
-        return $this->belongsTo(Role::class, 'role_id');
+        return $this->belongsTo(RoleModel::class, 'role_id');
     }
 }

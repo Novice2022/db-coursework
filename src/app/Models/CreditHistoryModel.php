@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CreditHistory extends Model
+class CreditHistoryModel extends Model
 {
     protected $table = 'credit_history';
     

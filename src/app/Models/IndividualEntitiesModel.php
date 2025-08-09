@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class IndividualEntity extends Model
+class IndividualEntitiesModel extends Model
 {
     protected $table = 'individual_entities';
     
@@ -19,11 +19,11 @@ class IndividualEntity extends Model
     
     public function client(): BelongsTo
     {
-        return $this->belongsTo(Client::class, 'client_id');
+        return $this->belongsTo(ClientsModel::class, 'client_id');
     }
     
     public function creditHistory(): BelongsTo
     {
-        return $this->belongsTo(CreditHistory::class, 'credit_history_id');
+        return $this->belongsTo(CreditHistoryModel::class, 'credit_history_id');
     }
 }

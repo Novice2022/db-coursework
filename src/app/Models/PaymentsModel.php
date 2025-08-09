@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Payment extends Model
+class PaymentsModel extends Model
 {
     protected $table = 'payments';
     
@@ -19,6 +19,6 @@ class Payment extends Model
     
     public function credit(): BelongsTo
     {
-        return $this->belongsTo(Credit::class, 'credit_id');
+        return $this->belongsTo(CreditsModel::class, 'credit_id');
     }
 }

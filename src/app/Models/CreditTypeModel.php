@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CreditType extends Model
+class CreditTypeModel extends Model
 {
     protected $table = 'credit_type';
     
@@ -15,6 +15,6 @@ class CreditType extends Model
     
     public function entityType(): BelongsTo
     {
-        return $this->belongsTo(EntityType::class, 'entity_type_id');
+        return $this->belongsTo(EntityTypeModel::class, 'entity_type_id');
     }
 }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class LegalEntity extends Model
+class LegalEntitiesModel extends Model
 {
     protected $table = 'legal_entities';
     
@@ -17,16 +17,16 @@ class LegalEntity extends Model
     
     public function client(): BelongsTo
     {
-        return $this->belongsTo(Client::class, 'client_id');
+        return $this->belongsTo(ClientsModel::class, 'client_id');
     }
     
     public function industry(): BelongsTo
     {
-        return $this->belongsTo(CompanyIndustry::class, 'industry_id');
+        return $this->belongsTo(CompanyIndustryModel::class, 'industry_id');
     }
     
     public function profitability(): BelongsTo
     {
-        return $this->belongsTo(Profitability::class, 'profitability_id');
+        return $this->belongsTo(ProfitabilityModel::class, 'profitability_id');
     }
 }

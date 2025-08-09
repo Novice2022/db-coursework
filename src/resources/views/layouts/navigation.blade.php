@@ -1,116 +1,77 @@
-<nav x-data="{ open: false }" class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-    <div class="container">
-        <!-- Логотип -->
-        <a class="navbar-brand" href="{{ route('dashboard') }}">
-            <span class="fw-bold text-primary">Кредитная система</span>
-        </a>
+@php
 
-        <!-- Кнопка для мобильного меню -->
-        <button 
-            @click="open = !open"
-            class="navbar-toggler" 
-            type="button" 
-            data-bs-toggle="collapse" 
-            aria-expanded="false" 
-            aria-label="Toggle navigation"
-        >
-            <span class="navbar-toggler-icon"></span>
-        </button>
+$user = auth()->user();
+$roleId = $user -> role_id;
 
-        <!-- Основное меню -->
-        <div class="collapse navbar-collapse justify-content-end" :class="{'show': open}">
-            <!-- Правая часть меню -->
-            <div class="d-flex align-items-center">
-                @auth
-                    <div class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div class="me-2 d-none d-sm-block">
-                                <div class="fw-bold text-end">{{ Auth::user()->name }}</div>
-                                <div class="small text-muted text-end">
-                                    @if(auth()->user()->role_id == 1)
-                                        Клиент
-                                    @elseif(auth()->user()->role_id == 2)
-                                        Аналитик
-                                    @elseif(auth()->user()->role_id == 3)
-                                        Менеджер
-                                    @elseif(auth()->user()->role_id == 4)
-                                        Администратор
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="avatar avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                            </div>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                    <i class="bi bi-person me-2"></i> Профиль
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item">
-                                        <i class="bi bi-box-arrow-right me-2"></i> Выйти
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                @else
-                    <a href="{{ route('login') }}" class="btn btn-outline-primary me-2">Вход</a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="btn btn-primary">Регистрация</a>
-                    @endif
-                @endauth
+$role = '';
+$contentViewName = '';
+
+if ($roleId === 1) {
+    $role = 'Клиент';
+    $contentViewName = 'client';
+} else if ($roleId === 2) {
+    $role = 'Аналитик';
+    $contentViewName = 'manager';
+} else if ($roleId === 3) {
+    $role = 'Менеджер';
+    $contentViewName = 'analyst';
+} else {
+    $role = 'Администратор';
+    $contentViewName = 'admin';
+}
+
+$client = $user -> client;
+
+@endphp
+
+<nav x-data="{ open: false }">
+    <a
+        class="company-name"
+        href="{{ route($contentViewName, $user -> id) }}"
+    >
+        На доброе дело
+    </a>
+    <div class="right">
+        @auth
+            <button 
+                @click="open = !open"
+                class="navbar-toggler" 
+                type="button" 
+            >
+                {{ $client -> fullname }}
+            </button>
+            <div class="dropdown" :class="{'show': open}">
+                <a class="profile" href="{{ route('profile.edit') }}">
+                    <button type="button">Профиль</button>
+                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="dropdown-item">Выйти</button>
+                </form>
             </div>
-        </div>
+        @else
+            <a href="{{ route('login') }}">Вход</a>
+            <a href="{{ route('register') }}">Регистрация</a>
+        @endauth
     </div>
 </nav>
 
 <style>
-    .navbar {
-        padding: 0.75rem 1rem;
-    }
-    
-    .nav-link {
-        padding: 0.5rem 1rem;
-        border-radius: 0.375rem;
-        transition: all 0.2s;
-    }
-    
-    .nav-link:hover, .nav-link.active {
-        background-color: rgba(13, 110, 253, 0.1);
-        color: var(--bs-primary);
-    }
-    
-    .avatar {
-        width: 36px;
-        height: 36px;
-        font-weight: 600;
-    }
-    
-    .dropdown-menu {
-        border: none;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-        border-radius: 0.5rem;
-        padding: 0.5rem;
-    }
-    
-    .dropdown-item {
-        border-radius: 0.375rem;
-        padding: 0.5rem 1rem;
-        transition: all 0.2s;
-    }
-    
-    .dropdown-item:hover {
-        background-color: rgba(13, 110, 253, 0.1);
-    }
-</style>
 
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    nav {
+        padding: 0 10%;
+        display: flex;
+        justify-content: space-between;
+        /* background-color: var(--primary-color); */
+        background-color: rgb(0, 100, 255);
+    }
+
+    .company-name {
+        padding: 20px;
+        margin: -20px;
+        align-self: center;
+        font-weight: 900;
+        font-size: 1.5rem;
+    }
+
+</style>

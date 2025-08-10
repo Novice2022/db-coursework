@@ -62,7 +62,7 @@ $client = $user -> client;
         padding: 15px 10%;
         display: flex;
         justify-content: space-between;
-        background-color: rgb(0, 100, 255);  /* var(--primary-color); */
+        background-color: var(--primary-color);;
         align-items: center
     }
 
@@ -71,7 +71,12 @@ $client = $user -> client;
         margin: -20px;
         align-self: center;
         font-weight: 900;
-        font-size: 1.5rem;
+        font-size: 1.75rem;
+        color: rgb(204, 204, 204);
+        transition: none;
+    }
+
+    .company-name:hover {
         color: white;
     }
 
@@ -93,7 +98,7 @@ $client = $user -> client;
         border: 2px solid white;
         border-radius: 15px;
         background-color: white;
-        color: rgb(0, 100, 255);  /* var(--primary-color); */
+        color: var(--primary-color);;
         font-size: .9rem;
         transition: none !important;
     }
@@ -105,7 +110,7 @@ $client = $user -> client;
     #dropleft {
         background-color: white;
         border-radius: 15px 0 0 15px;
-        border-right: 2px solid rgb(0, 100, 255);  /* var(--primary-color); */
+        border-right: 2px solid var(--primary-color);;
         align-items: center;
         padding: 0 10px;
     }
@@ -119,7 +124,7 @@ $client = $user -> client;
     }
     
     #dropleft .profile {
-        color: rgb(0, 100, 255);  /* var(--primary-color); */
+        color: var(--primary-color);;
     }
 
     #dropleft .logout {

@@ -7,3 +7,12 @@
 :root {
     --primary-color: rgb(0, 100, 255);
 }
+
+/* .debug {
+    background-color: rgb(221, 221, 221);
+    border-radius: 5px;
+    padding: 3px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: .65rem;
+    border: 1px solid white;
+} */

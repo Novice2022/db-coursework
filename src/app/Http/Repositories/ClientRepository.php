@@ -9,8 +9,8 @@ class ClientRepository {
         return ClientsModel::select(
             'fullname',
             'income',
-            'quality',
-            'supplement'
+            'credit_history.quality as credit_history_quality',
+            'supplement as credit_history_supplement',
         )
             -> join('individual_entities', 'clients.id', '=', 'individual_entities.client_id')
             -> join('credit_history', 'credit_history_id', '=', 'credit_history.id')

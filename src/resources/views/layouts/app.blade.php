@@ -7,13 +7,9 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-        <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
@@ -25,12 +21,13 @@
             </main>
         </div>
 
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Bootstrap Icons -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-
         <style>
+
+            :root {
+                --primary-color: rgb(0, 100, 255);
+                --primary-border: 3px solid var(--primary-color);
+                --block-border-radius: 15px;
+            }
 
             * {
                 padding: 0;
@@ -42,10 +39,72 @@
                 text-decoration: none;
                 outline: none;
                 color: black;
+
+                &.link {
+                    color: rgb(100, 100, 100);
+                    font-family: 'Courier New', Courier, monospace;
+                    font-size: .75rem;
+                    padding: 10px 15px;
+                }
+
+                &.link:hover {
+                    text-decoration: underline;
+                }
+
+                &.no-padding {
+                    padding: 0;
+                }
             }
 
+            button,
+            input,
+            select {
+                border: 2px solid transparent;
+                border-radius: 10px;
+                background-color: transparent;
+            }
+
+            button {
+                padding: 10px 15px;
+                font-weight: 700;
+                cursor: pointer;
+                color: var(--primary-color);
+
+                &.primary,
+                &.secondary:hover,
+                &.secondary:focus {
+                    border-color: var(--primary-color);
+                }
+
+                &.primary:hover,
+                &.primary:focus {
+                    background-color: var(--primary-color);
+                    color: white;
+                }
+            }
+
+            input,
+            select {
+                padding: 7px;
+                border-color: var(--primary-color);
+            }
+            
             main {
                 padding: 0 10%;
+            }
+
+            .debug {
+                background-color: rgb(221, 221, 221);
+                border-radius: 5px;
+                padding: 3px;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: .65rem;
+            }
+
+            .monospace {
+                font-family: 'Courier New', Courier, monospace;
+                font-size: .8rem;
+                align-content: center;
             }
 
         </style>

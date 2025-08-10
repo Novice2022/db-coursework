@@ -35,6 +35,7 @@
             * {
                 padding: 0;
                 margin: 0;
+                transition: 150ms;
             }
 
             a {

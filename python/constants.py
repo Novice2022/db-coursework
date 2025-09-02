@@ -378,7 +378,7 @@ def generate_non_static_data(amount: int, thread_name: str) -> None:
                 'role_id': 1,
                 'name': name,
                 'email': f"{name}@mail.ru".lower(),
-                'password': bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(rounds=12)).decode('utf-8').replace('$2b$', '2y$'),
+                'password': bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(rounds=12)).decode('utf-8').replace('$2b$', '$2y$'),
             }
         )
 
@@ -397,7 +397,7 @@ def generate_non_static_data(amount: int, thread_name: str) -> None:
 
         random_client_level = randint(1, 10)
 
-        interest_rate = 21  # base rate, % - https://cbr.ru/hd_base/KeyRate/
+        interest_rate = 18  # base rate, % - https://cbr.ru/hd_base/KeyRate/
         term = None
 
         if client['entity_type_id'] == 1:

@@ -32,8 +32,7 @@ class ClientController extends Controller
 }
 
 /**
- * individual with 3 credits
- *      client_id: 43e9fb13-135e-466b-a4e3-2e2f04387af3
- *      email: tommy_50779469150963_login@mail.ru
- *      password: Brown_password
+ * individual with 4 credits
+ *      email: brian_111799516161270_login@mail.ru
+ *      password: Timberlake_password
  */

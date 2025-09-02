@@ -143,7 +143,7 @@
                                             <a href="https://cbr.ru/hd_base/KeyRate/" class="link key no-padding">Ставка ЦБ</a>
                                             <div class="empty"></div>
                                         </div>
-                                        <span class="value number-column monospace">21</span>
+                                        <span class="value number-column monospace">18</span>
                                     </div>
                                     <div class="list-row">
                                         <span class="key">

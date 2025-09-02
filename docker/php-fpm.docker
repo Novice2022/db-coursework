@@ -33,8 +33,6 @@ RUN mkdir /app && chown -R $UID:$GID /app \
 
 USER user
 
-#VOLUME /src /app
-
 WORKDIR /app
 
 EXPOSE 9000

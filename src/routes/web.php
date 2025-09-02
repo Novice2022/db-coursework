@@ -20,13 +20,6 @@ Route::middleware('auth') -> group(function () {
         Route::delete('', [ProfileController::class, 'destroy'])
             -> name('profile.destroy');
     });
-
-    Route::prefix('client') -> group(function () {
-        Route::get('{userId}', [ClientController::class, 'index'])
-            -> name('client');
-        Route::get('{clientId}/creditHistory', [CreditController::class, 'history'])
-            -> name('credit.history');
-    });
         
     Route::prefix('credit') -> group(function () {
         Route::get('{id}', [CreditController::class, 'show'])
@@ -42,6 +35,13 @@ Route::middleware('auth') -> group(function () {
             -> name('about.creditHistory');
         Route::get('rates', [AboutController::class, 'rates'])
             -> name('about.rates');
+    });
+
+    Route::prefix('client') -> group(function () {
+        Route::get('{userId}', [ClientController::class, 'index'])
+            -> name('client');
+        Route::get('{clientId}/creditHistory', [CreditController::class, 'history'])
+            -> name('credit.history');
     });
 
     Route::get('manager/{id}', function (int $id) {

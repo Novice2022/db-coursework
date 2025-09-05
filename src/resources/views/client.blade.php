@@ -228,7 +228,7 @@
                     padding: 5px 10px;
                     display: grid;
     
-                    &:nth-child(2) {
+                    &:nth-child(even) {
                         background-color: rgb(240, 240, 240);
                     }
     

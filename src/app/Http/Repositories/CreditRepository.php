@@ -54,6 +54,7 @@ class CreditRepository {
     
     public static function getCreditFines(string $creditId) {
         return FinesModel::select(
+            'id',
             'amount',
             'reason',
             'datetime',

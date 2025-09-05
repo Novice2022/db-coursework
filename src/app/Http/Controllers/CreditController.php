@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Repositories\CreditRepository;
 
 class CreditController {
-    public function show(string $id) {
+    public function index(string $id) {
         $data = [
             'credit' => CreditRepository::getCredit($id),
             'payments' => CreditRepository::getCreditPayments($id),

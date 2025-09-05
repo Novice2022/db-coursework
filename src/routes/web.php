@@ -3,6 +3,7 @@
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CreditController;
+use App\Http\Controllers\FinesController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,10 +23,22 @@ Route::middleware('auth') -> group(function () {
     });
         
     Route::prefix('credit') -> group(function () {
-        Route::get('{id}', [CreditController::class, 'show'])
+        Route::get('{id}', [CreditController::class, 'index'])
             -> name('credit.index');
         Route::post('', [CreditController::class, 'store'])
             -> name('credit.store');
+    });
+
+    // Route::prefix('payment') -> group(function () {
+    //     Route::post('', [, 'store']);
+    //     Route::patch('{id}', [, 'update']);
+    // });
+
+    Route::prefix('fines') -> group(function () {
+        Route::post('', [FinesController::class, 'store'])
+            -> name('fine.create');
+        Route::patch('{id}', [FinesController::class, 'update'])
+            -> name('fine.update');
     });
 
     Route::prefix('about') -> group(function () {

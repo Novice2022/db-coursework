@@ -22,10 +22,10 @@ class ClientRepository {
         return ClientsModel::select(
             'fullname',
             'guarantee_amount',
-            'company_industry.name industry',
-            'company_industry.supplement industry_supplement',
-            'profitability.name profitability',
-            'profitability.supplement profitability_supplement'
+            'company_industry.name as industry',
+            'company_industry.supplement as industry_supplement',
+            'profitability.quality as profitability',
+            'profitability.supplement as profitability_supplement'
         )
             -> join('legal_entities', 'clients.id', '=', 'legal_entities.client_id')
             -> join('company_industry', 'industry_id', '=', 'company_industry.id')

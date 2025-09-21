@@ -22,11 +22,7 @@ class CreditRepository {
     }
 
     public static function getCredit(string $creditId) {
-        // TODO: Доп. вычисленные данные по кредиту, например: сколько и как долго платить...
-        
-        $data = [];
-
-        $data['info'] = CreditsModel::select(
+        return CreditsModel::select(
             'credits.id as id',
             'name',
             'amount',
@@ -37,10 +33,6 @@ class CreditRepository {
             -> join('credit_type', 'credit_type_id', '=', 'credit_type.id')
             -> where('credits.id', $creditId)
             -> first();
-
-        // $data['additional'] = ...
-
-        return $data;
     }
 
     public static function getCreditPayments(string $creditId) {

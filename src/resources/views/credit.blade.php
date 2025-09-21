@@ -1,14 +1,12 @@
 {{-- 
 
 $credit: {
-    info => {
-        id
-        name
-        amount
-        rate
-        term
-        start_date
-    }
+    id
+    name
+    amount
+    rate
+    term
+    start_date
 }
 
 $payments: [
@@ -33,60 +31,75 @@ $fines: [
 <x-app-layout>
     {{-- <h2>Debug</h2>
     <div class="debug">
-        <span>{{ print_r($credit['info']) }}</span>
+        <span>{{ print_r($credit) }}</span>
         <span>{{ print_r($payments) }}</span>
         <span>{{ print_r($fines) }}</span>
     </div> --}}
 
     <div class="container">
-        <div class="credit">
-            <h2>{{ $credit['info']['name'] }}</h2>
-            <div class="info">
-                <h3>{{ $credit['info']['amount'] }}&nbsp;руб.</h3>
-                <h3>Под {{ $credit['info']['rate'] }}% годовых.</h3>
-                <h3>От {{ $credit['info']['start_date'] }}</h3>
-                <h3>На {{ $credit['info']['term'] }} мес.</h3>
-            </div>
-        </div>
-
-        <div class="fines">
-            <h2>Штрафы</h2>
-
-            @if ($fines)
-                <div class="list">
-                    @foreach ($fines as $fine)
-                        <form
-                            action="{{ route('fine.update', $fine['id']) }}"
-                            method="post"
-                            class="fine"
-                            @class(['payed' => $fine['payed_at']])
-                        >
-                            @csrf
-                            @method('PATCH')
-                            <div class="row">
-                                <span class="reason">{{ $fine['reason'] }}</span>
-                                <span class="amount">{{ $fine['amount'] }}</span>
-                            </div>
-                            <div class="row">
-                                <span class="datetime">{{ $fine['datetime'] }}</span>
-                                @if ($fine['payed_at'])
-                                    <span class="status">Оплачен {{ $fine['payed_at'] }}</span>
-                                @else
-                                    <button class="primary" type="submit">Оплатить</button>
-                                @endif
-                            </div>
-                        </form>
-                    @endforeach
+        <div class="row">
+            <div class="credit">
+                <h2>{{ $credit['name'] }}</h2>
+                <div class="info">
+                    <h3>Начальная сумма&nbsp;&ndash;&nbsp;{{ $credit['amount'] }}&nbsp;руб.</h3>
+                    <h3>Под {{ $credit['rate'] }}% годовых на {{ $credit['term'] }} мес.</h3>
+                    <h3>От {{ $credit['start_date'] }}</h3>
+                    <hr>
+                    <h3>Осталось&nbsp;&ndash;&nbsp;{{ $remains['creditAmountRemains'] }}&nbsp;руб.</h3>
                 </div>
-            @else
-                <h3>Пусто</h3>
+            </div>
+    
+            @if ($fines)
+                <div class="fines">
+                    <h2>Штрафы</h2>
+                    <div class="list">
+                        @foreach ($fines as $fine)
+                            <form
+                                action="{{ route('fine.update', $fine['id']) }}"
+                                method="post"
+                                class="fine"
+                                @class(['payed' => $fine['payed_at']])
+                            >
+                                @csrf
+                                @method('PATCH')
+                                <div class="row">
+                                    <span class="reason">{{ $fine['reason'] }}</span>
+                                    <span class="amount">{{ $fine['amount'] }}</span>
+                                </div>
+                                <div class="row">
+                                    <span class="datetime">{{ $fine['datetime'] }}</span>
+                                    @if ($fine['payed_at'])
+                                        <span class="status">Оплачен {{ $fine['payed_at'] }}</span>
+                                    @else
+                                        <button class="primary" type="submit">Оплатить</button>
+                                    @endif
+                                </div>
+                            </form>
+                        @endforeach
+                    </div>
+                </div>
             @endif
         </div>
     
-        <div class="payments">
-            <h2>Платежи</h2>
-    
-            @if ($payments)
+        @if ($payments)
+            @php
+                $paymentsRemainsCount = $credit['term'] - count($payments);
+                $paymentsRemainsSumma = 0;
+
+                foreach ($payments as $payment) {
+                    $paymentsRemainsSumma += $payment['amount'];
+                }
+            @endphp
+
+            <div class="payments">
+                <h2>Платежи</h2>
+
+                <div class="remains">
+                    <span class="count">Осталось платежей: {{ $paymentsRemainsCount }}</span>
+                    <br>
+                    <span class="perMonthAmount">Каждый по {{ $remains['monthlyPayment'] }}&nbsp;руб.</span>
+                </div>
+        
                 <div class="list">
                     @foreach ($payments as $payment)
                         <div class="payment">
@@ -95,13 +108,18 @@ $fines: [
                         </div>
                     @endforeach
                 </div>
-            @else
-                <h3>Пусто</h3>
-            @endif
-        </div>
+            </div>
+        @endif
     </div>
 
     <style>
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
 
         .container {
             margin-top: 50px;
@@ -141,12 +159,6 @@ $fines: [
                 flex-direction: column;
                 gap: 15px;
 
-                .row {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                }
-
                 &.payed {
                     border-color: rgb(0, 216, 144);
                 }
@@ -154,6 +166,12 @@ $fines: [
 
             .payment {
                 justify-content: space-between;
+            }
+
+            .payments {
+                .remains {
+                    margin-bottom: 10px;
+                }
             }
         }
 

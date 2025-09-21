@@ -43,6 +43,12 @@
 
 --}}
 
+@php
+
+$interestRate = 17;
+
+@endphp
+
 <x-app-layout>
     {{-- <h2>Debug</h2>
     <div class="debug">
@@ -143,7 +149,7 @@
                                             <a href="https://cbr.ru/hd_base/KeyRate/" class="link key no-padding">Ставка ЦБ</a>
                                             <div class="empty"></div>
                                         </div>
-                                        <span class="value number-column monospace">18</span>
+                                        <span class="value number-column monospace">{{ $interestRate }}</span>
                                     </div>
                                     <div class="list-row">
                                         <span class="key">
@@ -156,7 +162,7 @@
                                     <div class="resulting">
                                         <div class="list-row">
                                             <span class="key">Итого</span>
-                                            <span class="value number-column monospace">...</span>
+                                            <span class="value number-column monospace">{{ $interestRate + $info['credit_history_supplement'] }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -188,11 +194,6 @@
     </div>
 
     <style>
-
-        .credits,
-        .create-credit {
-            justify-self: center;
-        }
 
         h2 {
             margin: 25px 0;

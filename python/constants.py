@@ -397,8 +397,10 @@ def generate_non_static_data(amount: int, thread_name: str) -> None:
 
         random_client_level = randint(1, 10)
 
-        interest_rate = 18  # base rate, % - https://cbr.ru/hd_base/KeyRate/
+        interest_rate = 17  # base rate, % - https://cbr.ru/hd_base/KeyRate/
         term = None
+
+        client_level = None
 
         if client['entity_type_id'] == 1:
             credit_history_id = randint(1, 6)
@@ -413,8 +415,8 @@ def generate_non_static_data(amount: int, thread_name: str) -> None:
 
             credit_type_id = randint(1, 3)
             credit_amount = next(CLIENTS_LEVELS['individuals']['credit_amount'][client_level])
-            interest_rate += CREDIT_HISTORY[credit_history_id - 1]['supplement']
             term = next(CLIENTS_LEVELS['individuals']['term'][client_level])
+            interest_rate += CREDIT_HISTORY[credit_history_id - 1]['supplement']
         else:
             industry_id = randint(1, 20)
             profitability_id = randint(1, 7)
@@ -430,8 +432,8 @@ def generate_non_static_data(amount: int, thread_name: str) -> None:
 
             credit_type_id = randint(4, 9)
             credit_amount = next(CLIENTS_LEVELS['legals']['credit_amount'][client_level])
-            interest_rate += COMPANY_INDUSTRY[industry_id - 1]['supplement'] + PROFITABILITY[profitability_id - 1]['supplement']
             term = next(CLIENTS_LEVELS['legals']['term'][client_level])
+            interest_rate += COMPANY_INDUSTRY[industry_id - 1]['supplement'] + PROFITABILITY[profitability_id - 1]['supplement']
 
         if (randint(1, 100) > 10):
             credits_amount = 1
@@ -446,6 +448,14 @@ def generate_non_static_data(amount: int, thread_name: str) -> None:
                 credits_amount += 1
 
             for _ in range(credits_amount):
+                if client['entity_type_id'] == 1:
+                    credit_type_id = randint(1, 3)
+                    credit_amount = next(CLIENTS_LEVELS['individuals']['credit_amount'][client_level])
+                    term = next(CLIENTS_LEVELS['individuals']['term'][client_level])
+                else:
+                    credit_type_id = randint(4, 9)
+                    credit_amount = next(CLIENTS_LEVELS['legals']['credit_amount'][client_level])
+                    term = next(CLIENTS_LEVELS['legals']['term'][client_level])
 
                 credit_id = uuid.uuid4()
 
@@ -458,7 +468,7 @@ def generate_non_static_data(amount: int, thread_name: str) -> None:
                 fines_probabilities = (0 if randint(0, 100) > 1 else 1 for _term in range(payed_terms))
 
                 current_time = time()
-
+                
                 for fine in fines_probabilities:
                     if payment_datetime > current_time:
                         break

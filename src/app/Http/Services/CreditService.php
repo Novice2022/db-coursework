@@ -11,7 +11,7 @@ class CreditService {
     ): array {
         $result = [
             'creditAmountRemains' => self::_getCreditAmountRemains($credit, $payments),
-            'monthlyPayment' => self::_getMonthlyPayment($credit, $payments),
+            'monthlyPayment' => self::_getMonthlyPayment($credit)
         ];
 
         return $result;
@@ -21,38 +21,28 @@ class CreditService {
         CreditsModel $credit,
         $payments
     ): float {
+        $monthRate = $credit -> rate / 12;
         $amount = $credit -> amount;
 
         foreach ($payments as $payment) {
             $amount -= $payment -> amount;
-            $amount *= 1 + $credit -> rate / 100;
+            $amount *= 1 + $monthRate / 100;
         }
 
-        return $amount;
+        return round($amount, 2);
     }
 
     private static function _getMonthlyPayment(
-        CreditsModel $credit,
-        $payments
+        CreditsModel $credit
     ): float {
         $amount = $credit -> amount;
         $term = $credit -> term;
-        $rate = $credit -> rate;
+        $monthRate = $credit -> rate / 1_200;
 
-        $paymentsAmount = 0;
-
-        foreach ($payments as $payment) {
-            $paymentsAmount += $payment -> amount;
-        }
-
-        $amount -= $paymentsAmount;
-        $term -= $payment -> count();
-        $monthRate = $rate / 12;
-        
-        $annuityRatio =
-            (($monthRate * (1 + $monthRate)) ** $term) /
-            ((1 + $monthRate) ** $term - 1);
-
-        return $amount * $annuityRatio;
+        return round(
+            ($amount * $monthRate * ((1 + $monthRate) ** $term)) /
+                (((1 + $monthRate) ** $term) - 1),
+            2
+        );
     }
 }

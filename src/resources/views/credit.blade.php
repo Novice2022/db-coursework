@@ -41,11 +41,11 @@ $fines: [
             <div class="credit">
                 <h2>{{ $credit['name'] }}</h2>
                 <div class="info">
-                    <h3>Начальная сумма&nbsp;&ndash;&nbsp;{{ $credit['amount'] }}&nbsp;руб.</h3>
+                    <h3>Начальная сумма {{ $credit['amount'] }}&nbsp;руб.</h3>
                     <h3>Под {{ $credit['rate'] }}% годовых на {{ $credit['term'] }} мес.</h3>
                     <h3>От {{ $credit['start_date'] }}</h3>
                     <hr>
-                    <h3>Осталось&nbsp;&ndash;&nbsp;{{ $remains['creditAmountRemains'] }}&nbsp;руб.</h3>
+                    <h3>Осталось {{ $remains['creditAmountRemains'] }}&nbsp;руб.</h3>
                 </div>
             </div>
     
@@ -95,22 +95,41 @@ $fines: [
                 <h2>Платежи</h2>
 
                 <div class="remains">
+                    <span class="payed">Выплачено: {{ $paymentsRemainsSumma }}</span>
+                    <br>
                     <span class="count">Осталось платежей: {{ $paymentsRemainsCount }}</span>
                     <br>
                     <span class="perMonthAmount">Каждый по {{ $remains['monthlyPayment'] }}&nbsp;руб.</span>
                 </div>
         
-                <div class="list">
-                    @foreach ($payments as $payment)
-                        <div class="payment">
-                            <span class="amount">{{ $payment['amount'] }}&nbsp;руб.</span>
-                            <span class="datetime">{{ $payment['datetime'] }}</span>
-                        </div>
-                    @endforeach
+                <div class="toggle">
+                    <button id="toggle-payments" class="default" type="button">Показать историю платежей</button>
+                    <div id="payments-list" class="list">
+                        @foreach ($payments as $payment)
+                            <div class="payment">
+                                <span class="amount">{{ $payment['amount'] }}&nbsp;руб.</span>
+                                <span class="datetime">{{ $payment['datetime'] }}</span>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         @endif
     </div>
+
+    <script>
+
+        const togglePayments = document.getElementById('toggle-payments');
+        const paymentsList = document.getElementById('payments-list');
+
+        togglePayments.addEventListener('click', () => {
+            paymentsList.classList.toggle('expanded');
+            
+            togglePayments.innerText = paymentsList.classList.contains('expanded') ?
+                'Свернуть' : 'Показать историю платежей';
+        });
+
+    </script>
 
     <style>
 
@@ -169,6 +188,21 @@ $fines: [
             }
 
             .payments {
+                .toggle {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+
+                    .list {
+                        height: 0;
+                        overflow: hidden;
+
+                        &.expanded {
+                            height: max-content;
+                        }
+                    }
+                }
+
                 .remains {
                     margin-bottom: 10px;
                 }

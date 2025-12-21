@@ -3,56 +3,66 @@
 namespace App\Http\Repositories;
 
 use App\Models\CreditsModel;
-use App\Models\FinesModel;
 use App\Models\PaymentsModel;
+use App\Models\FinesModel;
 
-class CreditRepository {
-    public static function getCredits(string $clientId) {
-        return CreditsModel::select(
-            'credits.id as id',
-            'name',
-            'amount',
-            'rate',
-            'term',
-            'start_date',
-        )
-            -> join('credit_type', 'credit_type_id', '=', 'credit_type.id')
-            -> where('client_id', $clientId)
-            -> get();
-    }
-
-    public static function getCredit(string $creditId) {
-        return CreditsModel::select(
-            'credits.id as id',
-            'name',
-            'amount',
-            'rate',
-            'term',
-            'start_date',
-        )
-            -> join('credit_type', 'credit_type_id', '=', 'credit_type.id')
-            -> where('credits.id', $creditId)
-            -> first();
-    }
-
-    public static function getCreditPayments(string $creditId) {
-        return PaymentsModel::select(
-            'amount',
-            'datetime'
-        )
-            -> where('credit_id', $creditId)
-            -> get();
+class CreditRepository
+{
+    public static function getCredit(string $creditId)
+    {
+        $credit = CreditsModel::with('creditType')->find($creditId);
+        
+        if (!$credit) {
+            return null;
+        }
+        
+        return [
+            'id' => $credit->id,
+            'name' => $credit->creditType->name,
+            'amount' => $credit->amount,
+            'rate' => $credit->rate,
+            'term' => $credit->term,
+            'start_date' => $credit->start_date,
+        ];
     }
     
-    public static function getCreditFines(string $creditId) {
-        return FinesModel::select(
-            'id',
-            'amount',
-            'reason',
-            'datetime',
-            'payed_at'
-        )
-            -> where('credit_id', $creditId)
-            -> get();
+    public static function getCredits(string $clientId)
+    {
+        return CreditsModel::where('client_id', $clientId)
+            ->with('creditType')
+            ->get()
+            ->map(function($credit) {
+                return [
+                    'id' => $credit->id,
+                    'name' => $credit->creditType->name,
+                    'amount' => $credit->amount,
+                    'rate' => $credit->rate,
+                    'term' => $credit->term,
+                    'start_date' => $credit->start_date->format('Y-m-d'),
+                ];
+            });
+    }
+    
+    public static function getCreditPayments(string $creditId)
+    {
+        return PaymentsModel::where('credit_id', $creditId)
+            ->orderBy('datetime', 'asc')
+            ->get();
+    }
+    
+    public static function getCreditFines(string $creditId)
+    {
+        return FinesModel::where('credit_id', $creditId)
+            ->orderBy('datetime', 'asc')
+            ->get()
+            ->map(function($fine) {
+                return [
+                    'id' => $fine->id,
+                    'amount' => $fine->amount,
+                    'reason' => $fine->reason,
+                    'datetime' => $fine->datetime->format('Y-m-d H:i:s'),
+                    'payed_at' => $fine->payed_at ? $fine->payed_at->format('Y-m-d H:i:s') : null,
+                ];
+            });
     }
 }

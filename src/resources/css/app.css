@@ -1,18 +1,53 @@
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities;
- */
-
-
 :root {
     --primary-color: rgb(0, 100, 255);
+    --primary-border: 2px solid var(--primary-color);
+    --block-border-radius: 8px;
 }
 
-/* .debug {
-    background-color: rgb(221, 221, 221);
-    border-radius: 5px;
-    padding: 3px;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: .65rem;
-    border: 1px solid white;
-} */
+body {
+    font-family: 'Ubuntu', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.alert-success {
+    background-color: #d1fae5;
+    border: 1px solid #10b981;
+    color: #065f46;
+}
+
+.alert-warning {
+    background-color: #fef3c7;
+    border: 1px solid #f59e0b;
+    color: #92400e;
+}

@@ -93,15 +93,30 @@ $fines: [
 
             <div class="payments">
                 <h2>Платежи</h2>
-
-                <div class="remains">
-                    <span class="payed">Выплачено: {{ $paymentsRemainsSumma }}</span>
-                    <br>
-                    <span class="count">Осталось платежей: {{ $paymentsRemainsCount }}</span>
-                    <br>
-                    <span class="perMonthAmount">Каждый по {{ $remains['monthlyPayment'] }}&nbsp;руб.</span>
+                
+                <div class="row">
+                    <div class="remains">
+                        <span class="payed">Выплачено: {{ $paymentsRemainsSumma }}</span>
+                        <br>
+                        <span class="count">Осталось платежей: {{ $paymentsRemainsCount }}</span>
+                        <br>
+                        <span class="perMonthAmount">Каждый по {{ $remains['monthlyPayment'] }}&nbsp;руб.</span>
+                    </div>
+                    <form class="payment" action="{{ route('payment.store') }}" method="post">
+                        <h3>Внести платёж</h3>
+                        <div class="input">
+                            <label for="payment-amount">Срок кредитования, месяцев</label>
+                            <input
+                                type="number"
+                                name="amount"
+                                id="payment-amount"
+                                min="{{ round($remains['monthlyPayment'] * .3, 2) }}"
+                                max="{{ $remains['monthlyPayment'] }}"
+                                placeholder="Сумма, руб."
+                            >
+                        </div>
+                    </form>
                 </div>
-        
                 <div class="toggle">
                     <button id="toggle-payments" class="default" type="button">Показать историю платежей</button>
                     <div id="payments-list" class="list">
@@ -188,6 +203,10 @@ $fines: [
             }
 
             .payments {
+                form {
+                    align-self: flex-start;
+                }
+
                 .toggle {
                     display: flex;
                     flex-direction: column;

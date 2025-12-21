@@ -20,7 +20,16 @@ class ClientsModel extends Model
         'login', 'password', 'address', 'registration_date'
     ];
     
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'rate' => 'decimal:2',
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+    ];
+
     protected $hidden = ['password'];
+
+    protected $with = ['entityType'];
     
     public $timestamps = false;
     

@@ -42,30 +42,24 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role_id' => $request->role,
-            'client' => null
         ];
 
-        if ($request->role === 'client') {
-            $userAttributes['client'] = ClientsModel::create([
-                'entity_type_id' => $request->entity_type,
+        if ($request->role === '1') {
+            $client = ClientsModel::create([
+                'entity_type_id' => $request->entity_type === 'legal' ? 2 : 1,
                 'fullname' => $request->name,
                 'phone' => $request->phone,
                 'address' => $request->address
             ]);
+            $userAttributes['client_id'] = $client->id;
         }
-        
+
         $user = User::create($userAttributes);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(
-            route(
-                $user -> role -> name,
-                [ $user->id ],
-                absolute: false
-            )
-        );
+        return redirect()->route('dashboard');
     }
 }

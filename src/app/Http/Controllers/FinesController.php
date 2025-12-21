@@ -13,7 +13,7 @@ class FinesController {
 
     public function update(string $id): RedirectResponse {
         FinesModel::find($id) -> update([
-            'payed_at' => time()
+            'payed_at' => now()
         ]);
 
         return back();

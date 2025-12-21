@@ -58,4 +58,24 @@ class User extends Authenticatable
     {
         return $this->belongsTo(RoleModel::class, 'role_id');
     }
+    
+    public function isClient(): bool
+    {
+        return $this->role_id === 1;
+    }
+
+    public function isManager(): bool
+    {
+        return $this->role_id === 2;
+    }
+
+    public function isAnalyst(): bool
+    {
+        return $this->role_id === 3;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role_id === 4;
+    }
 }

@@ -27,20 +27,20 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-        $user = $request -> user();
+        $user = $request->user();
 
-        switch ($user -> role_id) {
+        switch ($user->role_id) {
             case 1:
-                return redirect() -> route('client', [$user]);
+                return redirect()->route('client.dashboard');
             case 2:
-                return redirect() -> route('manager', [$user]);
+                return redirect()->route('manager.dashboard');
             case 3:
-                return redirect() -> route('analyst', [$user]);
+                return redirect()->route('analyst.dashboard');
+            case 4:
+                return redirect()->route('admin.dashboard');
             default:
-                return redirect() -> route('admin', [$user]);
+                return redirect()->route('dashboard');
         }
-        
-        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**

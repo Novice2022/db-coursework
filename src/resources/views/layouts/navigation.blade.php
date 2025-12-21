@@ -1,155 +1,107 @@
 @php
-
-$user = auth()->user();
-$roleId = $user -> role_id;
-
-$role = '';
-$contentViewName = '';
-
-if ($roleId === 1) {
-    $role = 'Клиент';
-    $contentViewName = 'client';
-} else if ($roleId === 2) {
-    $role = 'Аналитик';
-    $contentViewName = 'manager';
-} else if ($roleId === 3) {
-    $role = 'Менеджер';
-    $contentViewName = 'analyst';
-} else {
-    $role = 'Администратор';
-    $contentViewName = 'admin';
-}
-
-$client = $user -> client;
-
+    $user = auth()->user();
+    $client = $user ? $user->client : null;
 @endphp
 
-<nav>
-    <a
-        class="company-name"
-        href="{{ route($contentViewName, $user -> id) }}"
-    >
-        На доброе дело
-    </a>
-    <div class="header-nav-right">
-        @auth
-            <div id="dropleft" style="display: none">
-                <a href="{{ route('profile.edit') }}">
-                    <button class="profile" type="button">Профиль</button>
+<nav class="bg-white shadow-sm border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <!-- Логотип -->
+            <div class="flex items-center">
+                <a href="{{ route('dashboard') }}" class="flex items-center space-x-2">
+                    <x-application-logo class="h-8 w-auto" />
+                    <span class="font-bold text-xl text-gray-800">Кредитная система</span>
                 </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="logout" type="submit">Выйти</button>
-                </form>
             </div>
-            <button 
-                onclick="toggleDropleft(event)"
-                class="dropleft-toggler" 
-                type="button" 
-            >
-                {{ $client -> fullname }}
-            </button>
-        @else
-            <a href="{{ route('login') }}">Вход</a>
-            <a href="{{ route('register') }}">Регистрация</a>
-        @endauth
+
+            <!-- Правая часть -->
+            <div class="flex items-center space-x-4">
+                @auth
+                    <!-- Навигация по ролям -->
+                    @if($user->isManager() || $user->isAdmin())
+                        <a href="{{ route('manager.dashboard') }}" 
+                           class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                            Панель управления
+                        </a>
+                    @endif
+                    
+                    @if($user->isAdmin())
+                        <a href="{{ route('admin.dashboard') }}" 
+                           class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                            Администрирование
+                        </a>
+                    @endif
+
+                    <!-- Выпадающее меню пользователя -->
+                    <div class="relative ml-3" x-data="{ open: false }">
+                        <button @click="open = !open" 
+                                class="flex items-center max-w-xs text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <span class="sr-only">Открыть меню пользователя</span>
+                            <div class="flex items-center space-x-3">
+                                <x-role-badge :roleId="$user->role_id" />
+                                <span class="text-gray-700 font-medium">
+                                    {{ $client ? $client->fullname : $user->name }}
+                                </span>
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </button>
+
+                        <!-- Выпадающее меню -->
+                        <div x-show="open" 
+                             @click.away="open = false"
+                             x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter-start="transform opacity-0 scale-95"
+                             x-transition:enter-end="transform opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="transform opacity-100 scale-100"
+                             x-transition:leave-end="transform opacity-0 scale-95"
+                             class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                            
+                            <a href="{{ route('profile.edit') }}" 
+                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Профиль
+                            </a>
+                            
+                            @if($user->isClient())
+                                <a href="{{ route('client.dashboard') }}" 
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Мои кредиты
+                                </a>
+                            @endif
+                            
+                            <!-- Разделитель -->
+                            <div class="border-t my-1"></div>
+                            
+                            <!-- Форма выхода -->
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" 
+                                        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                    Выйти
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <a href="{{ route('login') }}" 
+                       class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                        Вход
+                    </a>
+                    
+                    @if(Route::has('register'))
+                        <a href="{{ route('register') }}" 
+                           class="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium">
+                            Регистрация
+                        </a>
+                    @endif
+                @endauth
+            </div>
+        </div>
     </div>
 </nav>
 
 <style>
-
-    nav {
-        padding: 15px 10%;
-        display: flex;
-        justify-content: space-between;
-        background-color: var(--primary-color);;
-        align-items: center
-    }
-
-    .company-name {
-        padding: 20px;
-        margin: -20px;
-        align-self: center;
-        font-weight: 900;
-        font-size: 1.75rem;
-        color: rgb(204, 204, 204);
-        transition: none;
-    }
-
-    .company-name:hover {
-        color: white;
-    }
-
-    .header-nav-right {
-        display: flex;
-    }
-
-    .header-nav-right button {
-        cursor: pointer;
-        font-weight: 700;
-    }
-
-    .header-nav-right button:hover {
-        text-decoration: underline;
-    }
-
-    .dropleft-toggler {
-        padding: 10px 20px;
-        border: 2px solid white;
-        border-radius: 15px;
-        background-color: white;
-        color: var(--primary-color);;
-        font-size: .9rem;
-        transition: none !important;
-    }
-
-    .dropleft-toggler:hover {
-        text-decoration: underline;
-    }
-
-    #dropleft {
-        background-color: white;
-        border-radius: 15px 0 0 15px;
-        border-right: 2px solid var(--primary-color);;
-        align-items: center;
-        padding: 0 10px;
-    }
-
-    #dropleft button {
-        width: 100%;
-        padding: 10px;
-        border: none;
-        background-color: transparent;
-        font-size: .8rem;
-    }
-    
-    #dropleft .profile {
-        color: var(--primary-color);;
-    }
-
-    #dropleft .logout {
-        color: rgb(255, 72, 72);
-    }
-
+    [x-cloak] { display: none; }
 </style>
-
-<script>
-
-    const dropleftElement = document.getElementById('dropleft');
-    let showDropleft = false;
-
-    const toggleDropleft = (event) => {
-        const target = event.target;
-
-        showDropleft = !showDropleft;
-
-        if (showDropleft) {
-            target.style.borderRadius = '0 15px 15px 0';
-            dropleftElement.style.display = 'flex';
-        } else {
-            target.style.borderRadius = '15px';
-            dropleftElement.style.display = 'none';
-        }
-    }
-
-</script>

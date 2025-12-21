@@ -5,7 +5,7 @@
         @if($applications->isEmpty())
             <div class="bg-white rounded-lg shadow p-8 text-center">
                 <p class="text-gray-500 mb-4">У вас пока нет заявок на кредиты</p>
-                <a href="{{ route('client.credits.create') }}" class="btn btn-primary">
+                <a href="{{ route('credits.create') }}" class="btn btn-primary">
                     Подать заявку на кредит
                 </a>
             </div>

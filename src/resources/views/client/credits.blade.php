@@ -61,7 +61,7 @@
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="{{ route('client.credits.show', $credit->id) }}" class="text-blue-600 hover:text-blue-900">
+                                        <a href="{{ route('credits.show', $credit->id) }}" class="text-blue-600 hover:text-blue-900">
                                             Подробнее
                                         </a>
                                     </td>

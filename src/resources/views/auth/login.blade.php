@@ -58,40 +58,4 @@
             </div>
         </div>
     </div>
-
-    <style>
-        .form-control {
-            height: 48px;
-            border-radius: 8px;
-            padding: 12px 16px;
-            border: 1px solid #e0e0e0;
-            transition: all 0.3s;
-        }
-        
-        .form-control:focus {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
-        }
-        
-        .btn-primary {
-            background-color: #0d6efd;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 500;
-        }
-        
-        .card {
-            border: none;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
-        
-        .text-decoration-underline {
-            text-decoration: none;
-        }
-        
-        .text-decoration-underline:hover {
-            text-decoration: underline;
-        }
-    </style>
 </x-guest-layout>

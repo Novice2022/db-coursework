@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AnalystController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -41,6 +42,19 @@ Route::middleware('auth')->group(function () {
         Route::get('rates', [AboutController::class, 'rates'])->name('about.rates');
     });
     
+    Route::prefix('credits')->name('credits.')->group(function () {
+        Route::get('{creditId}', [CreditController::class, 'show'])->name('show');
+        
+        Route::prefix('{creditId}/payments')->name('payments.')->group(function () {
+            Route::get('create', [PaymentController::class, 'create'])->name('create');
+            Route::post('', [PaymentController::class, 'store'])->name('store');
+        });
+
+        Route::prefix('{creditId}/fines')->name('fines.')->group(function () {
+            Route::patch('{fineId}', [FinesController::class, 'update'])->name('update');
+        });
+    });
+    
     Route::middleware(['role:1'])->prefix('client')->name('client.')->group(function () {
         Route::get('dashboard', [ClientController::class, 'dashboard'])->name('dashboard');
         Route::get('credits', [ClientController::class, 'credits'])->name('credits');
@@ -50,17 +64,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('credits')->name('credits.')->group(function () {
             Route::post('', [CreditController::class, 'store'])->name('store');
             Route::get('create', [CreditController::class, 'create'])->name('create');
-            Route::get('{creditId}', [CreditController::class, 'show'])->name('show');
             Route::get('{clientId}/history', [CreditController::class, 'history'])->name('history');
-            
-            Route::prefix('{creditId}/payments')->name('payments.')->group(function () {
-                Route::post('', [PaymentController::class, 'store'])->name('store');
-                Route::get('create', [PaymentController::class, 'create'])->name('create');
-            });
-
-            Route::prefix('{creditId}/fines')->name('fines.')->group(function () {
-                Route::patch('{fineId}', [FinesController::class, 'update'])->name('update');
-            });
         });
     });
     
@@ -94,6 +98,7 @@ Route::middleware('auth')->group(function () {
         Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('users', [AdminController::class, 'users'])->name('users');
         Route::get('credit-types', [AdminController::class, 'creditTypes'])->name('credit-types');
+        Route::get('entity-types', [AdminController::class, 'entityTypes'])->name('entity-types');
         Route::get('settings', [AdminController::class, 'settings'])->name('settings');
         Route::get('reports', [AdminController::class, 'reports'])->name('reports');
         
@@ -108,5 +113,31 @@ Route::middleware('auth')->group(function () {
             Route::put('{typeId}', [AdminController::class, 'updateCreditType'])->name('credit-types.update');
             Route::delete('{typeId}', [AdminController::class, 'deleteCreditType'])->name('credit-types.delete');
         });
+        
+        Route::prefix('entity-types')->group(function () {
+            Route::post('', [AdminController::class, 'createEntityType'])->name('entity-types.create');
+        });
     });
+});
+
+Route::middleware(['auth', 'role:4'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('cache-clear', function() {
+        Artisan::call('cache:clear');
+        return redirect()->route('admin.settings')->with('success', 'Кэш очищен');
+    })->name('cache.clear');
+    
+    Route::get('route-cache', function() {
+        Artisan::call('route:cache');
+        return redirect()->route('admin.settings')->with('success', 'Маршруты закэшированы');
+    })->name('route.cache');
+    
+    Route::get('view-cache', function() {
+        Artisan::call('view:cache');
+        return redirect()->route('admin.settings')->with('success', 'Представления закэшированы');
+    })->name('view.cache');
+    
+    Route::get('config-cache', function() {
+        Artisan::call('config:cache');
+        return redirect()->route('admin.settings')->with('success', 'Конфигурация закэширована');
+    })->name('config.cache');
 });

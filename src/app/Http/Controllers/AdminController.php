@@ -50,8 +50,10 @@ class AdminController extends Controller
         $creditTypes = CreditTypeModel::with('entityType')
             ->orderBy('name')
             ->get();
+        
+        $entityTypes = EntityTypeModel::all();
             
-        return view('admin.credit-types', compact('creditTypes'));
+        return view('admin.credit-types', compact('creditTypes', 'entityTypes'));
     }
 
     public function settings()

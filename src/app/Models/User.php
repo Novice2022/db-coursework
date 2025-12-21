@@ -78,4 +78,20 @@ class User extends Authenticatable
     {
         return $this->role_id === 4;
     }
+
+    public function isRegisteredUser(): bool
+    {
+        return $this->role_id === 1;
+    }
+
+    public function getRoleName(): string
+    {
+        return match($this->role_id) {
+            1 => 'Клиент',
+            2 => 'Менеджер',
+            3 => 'Аналитик',
+            4 => 'Администратор',
+            default => 'Неизвестно',
+        };
+    }
 }

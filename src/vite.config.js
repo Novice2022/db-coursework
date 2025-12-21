@@ -4,21 +4,25 @@ import laravel from 'laravel-vite-plugin';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: [
+                'resources/css/app.css',
+                'resources/js/app.js'
+            ],
             refresh: true,
         }),
     ],
     server: {
         host: '0.0.0.0',
+        port: 5173,
         hmr: {
             host: 'localhost',
         },
-        proxy: {
-            '/': {
-                target: 'http://localhost:9000', // ваш Laravel сервер
-                changeOrigin: true,
-                ws: true,
-            },
-        },
     },
+    build: {
+        rollupOptions: {
+            output: {
+                assetFileNames: 'assets/[name]-[hash][extname]'
+            }
+        }
+    }
 });

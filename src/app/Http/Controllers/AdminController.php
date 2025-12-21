@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClientsModel;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\CreditTypeModel;
@@ -89,11 +90,22 @@ class AdminController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'role_id' => 'required|integer|in:1,2,3,4',
-            'client_id' => 'nullable|uuid|exists:clients,id',
         ]);
-        
+
         $validated['password'] = Hash::make($validated['password']);
         
+        // Если создаем клиента
+        if ($validated['role_id'] == 1) {
+            $client = ClientsModel::create([
+                'id' => \Illuminate\Support\Str::uuid(),
+                'entity_type_id' => 1, // По умолчанию физическое лицо
+                'fullname' => $validated['name'],
+                'registration_date' => now(),
+            ]);
+            
+            $validated['client_id'] = $client->id;
+        }
+
         $user = User::create($validated);
         
         return redirect()->route('admin.users')

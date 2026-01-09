@@ -86,38 +86,4 @@ class RegisteredUserController extends Controller
             default => redirect()->route('dashboard'),
         };
     }
-    // public function store(Request $request): RedirectResponse
-    // {
-    //     $request->validate([
-    //         'name' => ['required', 'string', 'max:255'],
-    //         'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-    //         'password' => ['required', 'confirmed', Rules\Password::defaults()],
-    //         'role' => ['required', 'in:1,2,3'],
-    //     ]);
-
-    //     $userAttributes = [
-    //         'name' => $request->name,
-    //         'email' => $request->email,
-    //         'password' => Hash::make($request->password),
-    //         'role_id' => $request->role,
-    //     ];
-
-    //     if ($request->role === '1') {
-    //         $client = ClientsModel::create([
-    //             'entity_type_id' => $request->entity_type === 'legal' ? 2 : 1,
-    //             'fullname' => $request->name,
-    //             'phone' => $request->phone,
-    //             'address' => $request->address
-    //         ]);
-    //         $userAttributes['client_id'] = $client->id;
-    //     }
-
-    //     $user = User::create($userAttributes);
-
-    //     event(new Registered($user));
-
-    //     Auth::login($user);
-
-    //     return redirect()->route('dashboard');
-    // }
 }

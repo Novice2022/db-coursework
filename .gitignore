@@ -1,2 +1,4 @@
 docker/pgsql/
 test.ts
+
+laravel_project_code_*
